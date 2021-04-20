@@ -1,6 +1,5 @@
-## What is [scTPA](http://sctpa.bio-data.cn/sctpa)
-### Introduction
-scTPA is a web tool for single-cell transcriptome analysis and annotation based on biological pathway activation in human and mice. We collected a large number of biological pathways with different functional and taxonomic classifications, which facilitates the identification of key pathway signatures for cell type annotation and interpretation.
+# scTPA local application
+scTPA is the local tool for scTPA (http://sctpa.bio-data.cn/sctpa) single-cell transcriptome analysis and annotation based on biological pathway activation in human and mice. We collected a large number of biological pathways with different functional and taxonomic classifications, which facilitates the identification of key pathway signatures for cell type annotation and interpretation.
 
 ### What can scTPA do
 * Calculating pathway activity score of single cell
@@ -9,92 +8,106 @@ scTPA is a web tool for single-cell transcriptome analysis and annotation based 
 * Identifying significantly activated pathways of cell clusterings
 * Comparison analysis of the associated gene expression profiles of pathways
 
-## Usage
-### Install
-* **step1 Download scTPA**
-scTPA can be download directly  from `Download ZIP` button. Alternatively, scTPA can be installed through github: enter the directory where you would like to install scTPA and run
+# Installation
+### **Step 1. Download scTPA**
+scTPA local application can be download directly by
 ```
-git clone https://github.com/yupenghe/methylpy.git
-cd scTPA/
+wget http://sctpa.bio-data.cn:8888/sctpa/resources/scTPA_local-v7.zip
+unzip scTPA_local-v7.zip
+cd scTPA_local-v7
 ```
-* **step2 Install dependent R packages**
-For using scTPA, user must install following packages,:
->Seurat
->foreach
->bigstatsr
->data.table
-dplyr
-scales
-ggplot2
-cowplot
-pheatmap
-
+### **Step 2. Install dependent R packages**
 To install this packages, start "R" and enter:
 ```
-if (!requireNamespace(c("Seurat","bigstatsr","data.table","foreach","dplyr","scales","ggplot2","cowplot","pheatmap"), quietly = TRUE))
-    install.packages(c("Seurat","bigstatsr","data.table","foreach","dplyr","scales","ggplot2","cowplot","pheatmap"))
-```
-* **step3 Install optional R packages**
-If user want to use some specialized method in scTPA, the following R packages are required.
-1. `scran` for "scran" normalization method
-2. `scImpute` for "scImpute" imputation method
-3. `SIMLR` for "simlr" clustering method
-4. `dbscan` for "dbscan" clustering method 
+install.packages('p2data', repos='https://kharchenkolab.github.io/drat/', type='source')
+install.packages("devtools")
+install.packages("rJava")
+library(rJava)
+library(devtools)
+library(usethis)
+devtools::install_local("dependencies/pagoda2-v0.1.1-master.zip")
 
-**scran**
-```
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-if (!requireNamespace("scran", quietly = TRUE))
-    BiocManager::install("scran")
+BiocManager::install("parallel")
+BiocManager::install("optparse")
+BiocManager::install("scImpute")
+BiocManager::install("scran")
+BiocManager::install("scater")
+BiocManager::install("dplyr")
+BiocManager::install("Seurat")
+BiocManager::install("cluster")
+BiocManager::install("fpc")
+BiocManager::install("SIMLR")
+BiocManager::install("this.path")
+BiocManager::install("scales")
+BiocManager::install("ggplot2")
+BiocManager::install("cowplot")
+BiocManager::install("pheatmap")
+BiocManager::install("AUCell")
+BiocManager::install("Cairo")
+BiocManager::install("scde")
 ```
-**scImpute**
+### **Step 3. Install dependent Python packages**
 ```
-if (!requireNamespace("devtools", quietly = TRUE))
-    install.packages("devtools")
-if (!requireNamespace("scImpute", quietly = TRUE))
-    devtools::install_github("Vivianstats/scImpute")
+pip install pandas==0.25.3
+pip install numpy
+pip install json
+pip install clustergrammer
+pip install seaborn
+pip install multiprocessing
 ```
-**SIMLR**
-```
-if (!requireNamespace("devtools", quietly = TRUE))
-    install.packages("devtools")
-if (!requireNamespace("scImpute", quietly = TRUE))
-    devtools::install_github("Vivianstats/scImpute")
-```
-**dbscan**
-```
-if (!requireNamespace("dbscan", quietly = TRUE))
-    BiocManager::install("dbscan")
-```
-### Test scTPA
-```
-Rscript /path/to/you/scTPA-master/R/scTPA.R -f /path/to/you/scTPA-master/test/expression.csv --cellType /path/to/you/scTPA-master/test/cell_type.csv --work_dir /path/to/you/scTPA-master/ --species homo --pathway_database kegg --para_size 1 -o /path/to/you/scTPA-master/results/
-```
-Once the program has run successfully, a series of results files and folders will appear in the results folder.
-### Command
+# Usage
+### Example
 
 ```
-Rscript /path/to/you/scTPA/scTPA.R -h
-Options:
+Rscript src/scTPA.R -f example/e1_scRNA_UMI_count.csv --cellType example/e1_cell_type.csv --data_type count --species homo -o test/test_output_e1
+```
+```
+Rscript src/scTPA.R -f example/e2_melanoma.csv --cellType NULL --species homo --data_type TPM -o test/test_output_e2
+
+```
+Once the program has run successfully, a series of results files and folders will appear in the results folder.
+The results can be found at the directory **test/test_output_e1** or **test/test_output_e2**,  The file organization is as follows: 
+```
++--app.exe          //double click to visualize the results within Windows system.
++--data
+   +--app.js
+   +--bin
+   +--node_modules
+   +--content       //Result files and pictures where they are stored.
+```
+
+### Help Information
+```
+Rscript src/scTPA.R -h
+```
+
+##### **Required parameters:**
+```
     -f FILE, --file=FILE
        Gene expression profile, genes X cells. The processed gene expression profile can be generated using different platforms, such as 10X genomics and Smart-seq. The values in this profile should be non-negative, and this file can be uploaded depending on data types of UMI count, read count, RPKM, FPKM, CPM or TPM. [default= NULL]
+    --data_type=FILE
+        Data type of gene expression profile，Available options are 'TPM' or 'count'. 'count' indicate that the expression profile is non-negative UMI or read count. 'TPM' indicate that the expression profile is normalized FPKM, RPKM, CPM or TPM. [default= TPM]
+    --species=SPECIES
+        "Species. Available options are 'homo' or 'mus'. [default= homo]
     --cellType=CELLTYPE
         Optional. Cell type file. First column is cell name (same as the colnames of gene expression profile), second column is cell type. No header names. [default= NULL]
+```
+
+##### **Optional parameters:**
+```
+
     --normalize=NORMALIZE_METHOD
         Methods used for normalization. Available options are 'none', 'log', 'CLR', 'RC' 'sctrancform' or 'scran'. 'log', 'CLR' 'RC' and 'sctrancform': The normalization methods from Seurat R package. 'scran': The normalization strategy for scRNA-seq is implemented based on the deconvolutional size factor using the scran R package. "log", "CLR", "RC" or "scran"[default= none]
     --min_cells=MIN_CELLS
         Genes must be detected within a minimum number of cells. Used for filtering genes. [default= 3]
     --min_features=MIN_FEATURES
         Cells must have at least the minimum number of genes. Used for filtering cells. [default= 200]
-    --species=SPECIES
-        "Species. Available options are 'homo' or 'mus'. [default= homo]
     --imputation=IMPUTATION
         Imputation method. Available options are 'scImpute' or 'none'. 'scImpute': impute scRNA-seq profile using scImpute R package. [default= none]
-    --data_type=FILE
-        Data type of gene expression profile，Available options are 'TPM' or 'count'. 'count' indicate that the expression profile is non-negative UMI or read count. 'TPM' indicate that the expression profile is normalized FPKM, RPKM, CPM or TPM. [default= TPM]
     --pathway_database=PATHWAY_DATABASE
-        Pathway database. Avalible database are avalible on https://github.com/sulab-wmu/scTPA#details [default= kegg]
+        Pathway database. Avalible database are avalible on https://github.com/sulab-wmu/scTPA [default= kegg]
     --user_pathway=USER_PATHWAY
         Optional. User defined pathway file in gmt format. [default = NULL]
     --pas_method=PAS_METHOD
@@ -126,7 +139,8 @@ Options:
     -h, --help
         Show this help message and exit
 ```
-#### Details
+
+#### Details for Specific Parameters
 **`--normalize`:**
 ***log:*** Log transform. Feature counts output for each cell is divided by the total counts for that cell and multiplied by 1e4. This is then natural-log transformed.
 ***CLR:*** Centered log ratio. A commonly used Compositional Data Analysis (CoDA) transformation method.
@@ -143,7 +157,6 @@ Options:
 ***TPM***: Continuous data.
 
 **`--pathway_database`:**
-
 when "--species" is "homo", "--pathway_database" can be select as follow:
 ***kegg***: An encyclopaedia for genes reaction and regulation. [KEGG](https://www.genome.jp/kegg/). 
 ***reactome***: A curated database for biomolecular pathways. [Reactome](https://reactome.org/). 
@@ -173,4 +186,3 @@ when "--species" is mus, "--pathway_database" can be select as follow:
 ***c5.mf***: GO cellular component. [GSKB](http://ge-lab.org/gskb/). 
 ***c5.cc***: GO molecular function. [GSKB](http://ge-lab.org/gskb/). 
 ***other***: Including "Location", "HPO", "STITCH", "MPO", "T3DB", "PID", "MethyCancer" and "MethCancerDB*, details see [table](http://ge-lab.org/gskb/Table%201-sources.pdf). [GSKB](http://ge-lab.org/gskb/). 
-
