@@ -111,7 +111,7 @@ Rscript src/scTPA.R -h
     --user_pathway=USER_PATHWAY
         Optional. User defined pathway file in gmt format. [default = NULL]
     --pas_method=PAS_METHOD
-        PAS (pathway activation signatures) transformation method. Available options are 'Pagoda2', 'Vision', 'AUCell', 'gsva', 'ssgsea', 'zscore' or 'plage'. [default= ssgsea]
+        PAS (pathway activation signatures) transformation method. Available options are 'pagoda2', 'Vision', 'AUCell', 'gsva', 'ssgsea', 'zscore' or 'plage'. [default= ssgsea]
     --para_size=PARA_SIZE
         Number of kernels used for parallel computation. [default= 4]
     --cluster_method=CLUSTER_METHOD
