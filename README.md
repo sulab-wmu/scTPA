@@ -64,7 +64,7 @@ pip install multiprocessing
 Rscript src/scTPA.R -f example/e1_scRNA_UMI_count.csv --cellType example/e1_cell_type.csv --data_type count --species homo -o test/test_output_e1
 ```
 ```
-Rscript src/scTPA.R -f example/e2_melanoma.csv --cellType NULL --species homo --data_type TPM -o test/test_output_e2
+Rscript src/scTPA.R -f example/e2_melanoma.csv  --species homo --data_type TPM   --pas_method gsva  -o test/test_output_e2
 
 ```
 Once the program has run successfully, a series of results files and folders will appear in the results folder.
